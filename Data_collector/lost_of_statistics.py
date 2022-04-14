@@ -15,11 +15,9 @@ def qet_user_path():
     return path_file
 
 
-def get_df_lost_of_statistics():
-    path_file = qet_user_path()
-
+def get_df_lost_of_statistics(mr):
     df = pd.read_excel(
-        path_file,
+        qet_user_path(),
         sheet_name='Итого disconnect',
         skiprows=2,
     )
@@ -28,4 +26,8 @@ def get_df_lost_of_statistics():
         columns={f'Количество по полю _x000D_\n Network Element': 'Количество Network Element'},
         inplace=True
     )
+    if "All" not in mr:
+        df = df[df["Макрорегион"].str.contains('|'.join(mr))].reset_index(drop=True)
+    if not mr:
+        df = ""
     return df

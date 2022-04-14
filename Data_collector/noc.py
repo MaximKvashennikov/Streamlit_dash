@@ -9,7 +9,7 @@ def get_duty(mr_from_st):
                'F-EAST': 'AND, BIR, BRT, IRK, KAM, MGD, SAH, VLD, YAK',
                'Siberia': 'GRN, BRN, KEM, KHA, KRS, NSK, OMS, TOM, TYV',
                'CBS': 'KUR, BEL, BRY, LIP, MRD, ORL, PNZ, SRV, TAM, VRN',
-               'Volga': 'IZH, KAZ, KIR, NIN, SAM, ULN, YOL',
+               'Volga': 'IZH, KAZ, KIR, NIN, SAM, ULN, YOL, CHV',
                'Centre': ['IVN', 'KLG', 'KOS', 'RYZ', 'SMO', 'TUL', 'TVE', 'VLA', 'YRL'],
                'N-W': 'ARH, KLN, MUR, NOV, PSK, PZV, SPB, SPE, SPN, SPS, SPW, VOL, NEN',
                'Moscow': 'MOS, SEA, NEA, CNT, NWS, SWS',

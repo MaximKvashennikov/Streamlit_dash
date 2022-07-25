@@ -9,7 +9,8 @@ class Eband(Report):
         self.get_summary_eband = get_summary_eband
 
     def get_russia_stat(self):
-        df = (self.get_report_eband.iloc[:5, 1:]).drop(self.now_rename_week(), axis=1)
+        # df = (self.get_report_eband.iloc[:5, 1:]).drop(self.now_rename_week(), axis=1)
+        df = (self.get_report_eband.iloc[:5, 1:])
         df = pd.concat([df.iloc[:, :2], df.iloc[:, -6:]], axis=1)
         df.rename(columns={'Unnamed: 2': 'Band', 'MR': ''}, inplace=True)
         df = df.fillna("")
@@ -21,7 +22,8 @@ class Eband(Report):
         return df
 
     def get_russia_stat_all_week(self):
-        df = (self.get_report_eband.iloc[:5, 1:]).drop(self.now_rename_week(), axis=1)
+        # df = (self.get_report_eband.iloc[:5, 1:]).drop(self.now_rename_week(), axis=1)
+        df = (self.get_report_eband.iloc[:5, 1:])
         df = pd.concat([df.iloc[:, :2], df.iloc[:, 3:-1]], axis=1)
         df.rename(columns={'Unnamed: 2': 'Band', 'MR': ''}, inplace=True)
         df = df.fillna("")
@@ -65,7 +67,8 @@ class Eband(Report):
         return df_sort_top_regions
 
     def get_built_rll(self):
-        df = (self.get_report_eband.iloc[:5, 1:]).drop(self.now_rename_week(), axis=1)
+        # df = (self.get_report_eband.iloc[:5, 1:]).drop(self.now_rename_week(), axis=1)
+        df = (self.get_report_eband.iloc[:5, 1:])
         df = (pd.concat([df.iloc[:, 1:2], df.iloc[:, 3:-1]], axis=1)).loc[[1, 4]]
         df.rename(columns={'Unnamed: 2': ''}, inplace=True)
         df.fillna(0, inplace=True)
@@ -140,3 +143,29 @@ class Eband(Report):
         plt.grid()
 
         return plt
+
+
+def get_report_eband():
+    path_integrity = "L:\Transport_planning\VISIO ЧТП\Access\Operation Group\Удаление Е1\Radiolinks\Использованию Eband в новом строительстве.xlsx"
+
+    xls = pd.ExcelFile(path_integrity)
+    df = pd.read_excel(
+        path_integrity,
+        sheet_name=xls.sheet_names[0],
+    )
+    return df
+
+
+def get_summary_eband():
+    path_integrity = "L:\Transport_planning\VISIO ЧТП\Access\Operation Group\Удаление Е1\Radiolinks\Использованию Eband в новом строительстве.xlsx"
+
+    xls = pd.ExcelFile(path_integrity)
+    df = pd.read_excel(
+        path_integrity,
+        sheet_name=xls.sheet_names[1],
+    )
+    return df
+
+
+def instance_eband():
+    return Eband(get_report_eband=get_report_eband(), get_summary_eband=get_summary_eband())

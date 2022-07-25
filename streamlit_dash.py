@@ -8,39 +8,14 @@ import streamlit.components.v1 as components
 import seaborn as sns
 import matplotlib.pyplot as plt
 from pandas import concat
-from Data_collector.get_integrity import get_percentage_of_overloaded
-from Data_collector.get_integrity import get_integrity
+from Data_collector.get_integrity import (get_percentage_of_overloaded, get_annual_integrity, set_annual_integrity,
+                                          get_week_integrity)
 from Data_collector.vacation import vacations_access
 from Data_collector.noc import get_duty
 from Data_collector.lost_of_statistics import get_df_lost_of_statistics
-from Data_collector.eband import Eband
+from Data_collector.eband import instance_eband
 from Data_collector.template_settings import top_five_template_settings
-
-
-def get_report_eband():
-    path_integrity = "L:\Transport_planning\VISIO ЧТП\Access\Operation Group\Удаление Е1\Radiolinks\Использованию Eband в новом строительстве.xlsx"
-
-    xls = pd.ExcelFile(path_integrity)
-    df = pd.read_excel(
-        path_integrity,
-        sheet_name=xls.sheet_names[0],
-    )
-    return df
-
-
-def get_summary_eband():
-    path_integrity = "L:\Transport_planning\VISIO ЧТП\Access\Operation Group\Удаление Е1\Radiolinks\Использованию Eband в новом строительстве.xlsx"
-
-    xls = pd.ExcelFile(path_integrity)
-    df = pd.read_excel(
-        path_integrity,
-        sheet_name=xls.sheet_names[1],
-    )
-    return df
-
-
-def instance_eband():
-    return Eband(get_report_eband=get_report_eband(), get_summary_eband=get_summary_eband())
+from Data_collector.push_sites_capacity import show_push_capacity, qet_user_path, show_push_capacity_lines
 
 
 def det_table_sql(str_sql):
@@ -234,6 +209,7 @@ def highlight(df):
 
 
 if __name__ == '__main__':
+    st.subheader(f'Новый адрес http://10.12.47.199:8501/')
     now_week = three_week()[0]
     previous_week = three_week()[1]
 
@@ -241,7 +217,7 @@ if __name__ == '__main__':
     dr_list = birthdays.dr()
     if len(dr_list) > 0:
         for man_happy in dr_list:
-            st.sidebar.subheader(f"Скоро День рождения :)\n{','.join(dr_list)}")
+            st.sidebar.subheader(f"Скоро День рождения :)\n{man_happy}")
             st.sidebar.write(birthdays.date_birthdays_dict[man_happy].strftime("%d.%m.%Y"))
     if len(vacations_list) > 0:
         st.sidebar.subheader(f"Скоро отпуск:\n{', '.join(vacations_list[0][1])}")
@@ -273,7 +249,12 @@ if __name__ == '__main__':
     st.dataframe(get_df_count_week_task_in_work())
 
     try:
-        st.table(get_percentage_of_overloaded(get_integrity()))
+        '''Данные RRL integrity'''
+        set_annual_integrity(get_week_integrity())
+    except PermissionError:
+        st.error(f'Закройте отчет "RRL integrity Ежегодный свод"')
+    try:
+        st.table(get_percentage_of_overloaded(get_annual_integrity()))
     except ValueError:
         st.error(f'В отчете "RRL integrity Ежегодный свод" нет данных за предыдущую неделю {previous_week}')
 
@@ -305,7 +286,7 @@ if __name__ == '__main__':
                 '[.][0]$', "", regex=True), 2000, 10000)
         except (PermissionError, FileNotFoundError, KeyError):
             if KeyError:
-                st.error('Отчет формируется в 7:30 по МСК, информацию можно получить после этого времени')
+                st.error('Нет данных за текущую неделю')
             else:
                 st.error('Проблема с отчетом "Использование eband в новом строительстве", попробуйте обновить страницу')
 
@@ -321,5 +302,15 @@ if __name__ == '__main__':
                     **{'font-weight': '600'}),
                 2000, 10000
             )
-        except (PermissionError, FileNotFoundError):
+        except PermissionError:
             st.error('Нет доступа к отчету, файл занят, попробуйте нажать еще раз или обновите страницу')
+        except FileNotFoundError:
+            st.error('Файл не найден')
+
+    st.subheader('Данные из отчетов PUSHREPORTS')
+    st.markdown(f"{qet_user_path().split('/')[-1]}")
+    try:
+        st.plotly_chart(show_push_capacity())
+        st.plotly_chart(show_push_capacity_lines())
+    except FileNotFoundError:
+        st.error('Нет файлов за предыдущую неделю')

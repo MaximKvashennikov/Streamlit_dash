@@ -8,7 +8,6 @@ class ConnectSql:
                                          "SERVER=TIS-SQL-CLU-A.corp.tele2.ru;"
                                          f"Database={database};"
                                          "PORT=1433;"
-                                         "Trusted_Connection=yes;"
                                          "UID=accessnetwork;"
                                          "PWD=xvd5c;"
                                          )

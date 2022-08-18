@@ -4,10 +4,11 @@ import pandas as pd
 
 class ConnectSql:
     def __init__(self, database=None, request=None):
-        self.connect_db = pyodbc.connect("DRIVER={SQL Server};"
+        self.connect_db = pyodbc.connect("DRIVER={ODBC Driver 17 for SQL Server};"
                                          "SERVER=TIS-SQL-CLU-A.corp.tele2.ru;"
                                          f"Database={database};"
                                          "PORT=1433;"
+                                         # "Trusted_Connection=yes;"
                                          "UID=accessnetwork;"
                                          "PWD=xvd5c;"
                                          )

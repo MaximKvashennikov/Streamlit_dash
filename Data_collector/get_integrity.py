@@ -8,7 +8,7 @@ import os
 from openpyxl.reader.excel import load_workbook
 
 
-def get_path(path_user="//corp.tele2.ru//cpfolders//STAT.CP.Reports//Weekly_RRL_Integrity"):
+def get_path(path_user="/mnt/rrl_integrity_share"):
     """ Получение последнего файла с пролетами из папки """
 
     list_files_sw = [s for s in os.listdir(path_user)
@@ -43,24 +43,24 @@ def unpack_handler():
 def unpack_file_rar():
     """ Распаковка .rar """
 
-    rarfile.UNRAR_TOOL = "D:\Python\Streamlit\Data_collector\\UnRAR.exe"
+    # rarfile.UNRAR_TOOL = "D:\Python\Streamlit\Data_collector\\UnRAR.exe"
     path = get_path()
-    dir_out = "L:\Transport_planning\VISIO ЧТП\Access\Operation Group\Отчеты RRL Capacity_4pica\Weekly_RRL_Integrity"
+    dir_out = "/mnt/cpfolders_share/Operation Group/Отчеты RRL Capacity_4pica/Weekly_RRL_Integrity"
     with rarfile.RarFile(path, "r") as rf:
         rf.extractall(dir_out)
-    return f"{get_path(path_user=dir_out)}".replace('//', '\\')
+    return f"{dir_out}//{path.split('//')[-1].split('.')[0]}.xlsx".replace('\\', '//')
 
 
 def unpack_file_any():
     """ Распаковка любого архива """
 
     path = get_path()
-    dir_out = "L:\Transport_planning\VISIO ЧТП\Access\Operation Group\Отчеты RRL Capacity_4pica\Weekly_RRL_Integrity"
+    dir_out = "/mnt/cpfolders_share/Operation Group/Отчеты RRL Capacity_4pica/Weekly_RRL_Integrity"
     patoolib.extract_archive(path,
                              outdir=dir_out,
                              interactive=False
                              )
-    return f"{get_path(path_user=dir_out)}".replace('//', '\\')
+    return f"{get_path(path_user=dir_out)}".replace('\\', '//')
 
 
 def unpack_file_zip():
@@ -72,7 +72,7 @@ def unpack_file_zip():
 
 
 def get_annual_integrity():
-    path_integrity = "L:\\Transport_planning\\VISIO ЧТП\\Access\\Operation Group\\RRL_integrity_Ежегодный свод.xlsx"
+    path_integrity = "/mnt/cpfolders_share/Operation Group/RRL_integrity_Ежегодный свод.xlsx"
 
     xls = pd.ExcelFile(path_integrity)
     df = pd.read_excel(
@@ -96,7 +96,6 @@ def get_week_integrity():
 def get_percentage_of_overloaded(df):
     week_previous_integrity = f"w{get_last_week()[-2:]}"
     df = df[["Label", week_previous_integrity]].head(2)
-    print(type(df.iloc[0, 1]))
     if type(df.iloc[0, 1]) == str:
         df.iloc[0, 1] = f"{round(float(df.iloc[0, 1][:-1].replace(',', '.')), 2)}%".replace('.', ',')
     elif df.iloc[0, 1].dtype == 'float64':
@@ -110,7 +109,7 @@ def get_percentage_of_overloaded(df):
 
 @cache(allow_output_mutation=True)
 def set_annual_integrity(df):
-    path_integrity = "L:\\Transport_planning\\VISIO ЧТП\\Access\\Operation Group\\RRL_integrity_Ежегодный свод.xlsx"
+    path_integrity = "/mnt/cpfolders_share/Operation Group/RRL_integrity_Ежегодный свод.xlsx"
     last_week = get_last_week()
     df = df[(df["Region"] == "RUSSIA") & (df["Label"] != "Total RRL")]
     df = df[f"{last_week}"]

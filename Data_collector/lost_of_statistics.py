@@ -5,12 +5,12 @@ import pandas as pd
 def qet_user_path():
     """ Получение последнего файла с пролетами из папки загрузок """
 
-    path_user = '//t2ru//CPFolders//T2CP-FPS-02//Transport_Network//ACCESS//Контроль дисконнектов'
+    path_user = '/mnt/transport_network_share/ACCESS/Контроль дисконнектов'
 
     list_files_sw = [s for s in os.listdir(path_user)
                      if os.path.isfile(os.path.join(path_user, s))]
     list_files_sw.sort(key=lambda s: os.path.getmtime(os.path.join(path_user, s)))
-    path_file = path_user + "\\" + list_files_sw[-1]
+    path_file = path_user + "/" + list_files_sw[-1]
 
     return path_file
 

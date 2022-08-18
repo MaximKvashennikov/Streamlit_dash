@@ -146,7 +146,7 @@ class Eband(Report):
 
 
 def get_report_eband():
-    path_integrity = "L:\Transport_planning\VISIO ЧТП\Access\Operation Group\Удаление Е1\Radiolinks\Использованию Eband в новом строительстве.xlsx"
+    path_integrity = "/mnt/cpfolders_share/Operation Group/Удаление Е1/Radiolinks/Использованию Eband в новом строительстве.xlsx"
 
     xls = pd.ExcelFile(path_integrity)
     df = pd.read_excel(
@@ -157,7 +157,7 @@ def get_report_eband():
 
 
 def get_summary_eband():
-    path_integrity = "L:\Transport_planning\VISIO ЧТП\Access\Operation Group\Удаление Е1\Radiolinks\Использованию Eband в новом строительстве.xlsx"
+    path_integrity = "/mnt/cpfolders_share/Operation Group/Удаление Е1/Radiolinks/Использованию Eband в новом строительстве.xlsx"
 
     xls = pd.ExcelFile(path_integrity)
     df = pd.read_excel(

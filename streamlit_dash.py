@@ -15,7 +15,7 @@ from Data_collector.noc import get_duty
 from Data_collector.lost_of_statistics import get_df_lost_of_statistics
 from Data_collector.eband import instance_eband
 from Data_collector.template_settings import top_five_template_settings
-from Data_collector.push_sites_capacity import show_push_capacity, qet_user_path, show_push_capacity_lines
+from Data_collector.push_sites_capacity import PushReport
 
 
 def det_table_sql(str_sql):
@@ -209,11 +209,12 @@ def highlight(df):
 
 
 if __name__ == '__main__':
-    st.subheader(f'Новый адрес http://10.12.47.199:8501/')
+    st.sidebar.subheader(f"Дашборд PUSHREPORTS: http://10.12.47.199:8502/")
+
     now_week = three_week()[0]
     previous_week = three_week()[1]
 
-    vacations_list = vacations_access(os.getcwd() + "\\Data_collector\\vacation.json")
+    vacations_list = vacations_access(os.getcwd() + "/Data_collector/vacation.json")
     dr_list = birthdays.dr()
     if len(dr_list) > 0:
         for man_happy in dr_list:
@@ -253,6 +254,8 @@ if __name__ == '__main__':
         set_annual_integrity(get_week_integrity())
     except PermissionError:
         st.error(f'Закройте отчет "RRL integrity Ежегодный свод"')
+    except Exception:
+        st.error(f'Для отображения попробуйте обновить страницу')
     try:
         st.table(get_percentage_of_overloaded(get_annual_integrity()))
     except ValueError:
@@ -308,9 +311,23 @@ if __name__ == '__main__':
             st.error('Файл не найден')
 
     st.subheader('Данные из отчетов PUSHREPORTS')
-    st.markdown(f"{qet_user_path().split('/')[-1]}")
-    try:
-        st.plotly_chart(show_push_capacity())
-        st.plotly_chart(show_push_capacity_lines())
-    except FileNotFoundError:
-        st.error('Нет файлов за предыдущую неделю')
+    st.markdown(f'Дашборд PUSHREPORTS: http://10.12.47.199:8502/')
+    # push_reports = PushReport()
+    # df_rollout = push_reports.get_report_push_capacity(path=push_reports.qet_rollout_path())
+    # df_capacity = push_reports.get_report_push_capacity(path=push_reports.qet_capacity_path())
+    # df_vault = push_reports.get_report_push_capacity_vault(path=push_reports.qet_capacity_path())
+    #
+    # ip_rollout_list = df_rollout["IP"].ffill().unique().tolist()
+    # ip_rollout_list.sort(key=str, reverse=True)
+    # if 0 in ip_rollout_list:
+    #     ip_rollout_list.remove(0)
+    #
+    # st.markdown(f"{push_reports.qet_capacity_path().split('/')[-1]}, {push_reports.qet_rollout_path().split('/')[-1]}")
+    # try:
+    #     st.plotly_chart(push_reports.show_push_capacity(df_capacity))
+    #
+    #     options = st.multiselect('Выберите IP для фильтрации данных rollout', ip_rollout_list)
+    #     st.plotly_chart(push_reports.show_push_rollout(df_rollout, options))
+    #     st.plotly_chart(push_reports.show_push_capacity_lines(df_vault))
+    # except FileNotFoundError:
+    #     st.error('Нет файлов за предыдущую неделю')

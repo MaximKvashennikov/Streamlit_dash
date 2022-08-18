@@ -12,55 +12,41 @@ def get_path(path_user):
     list_files_sw = [s for s in os.listdir(path_user)
                      if os.path.isfile(os.path.join(path_user, s))]
     list_files_sw.sort(key=lambda s: os.path.getmtime(os.path.join(path_user, s)))
-    path_file = path_user + "\\" + list_files_sw[-1]
+    path_file = path_user + "/" + list_files_sw[-1]
 
     return path_file
 
 
 def check_format():
     """ Проверка формата архива """
-    return get_path(path_user='L:\STAT.CP.Reports\Weekly_Template_Settings_Report').split(".")[-1]
+    return get_path(path_user='/mnt/template_settings_share').split(".")[-1]
 
 
 def unpack_handler():
     if check_format() == "zip":
         return unpack_file_zip()
-    elif check_format() == "rar":
-        # return unpack_file_rar()
-        return unpack_file_any()
     else:
         return unpack_file_any()
-
-
-def unpack_file_rar():
-    """ Распаковка .rar """
-
-    rarfile.UNRAR_TOOL = "D:\Python\Streamlit\Data_collector\\UnRAR.exe"
-    path = get_path(path_user='L:\STAT.CP.Reports\Weekly_Template_Settings_Report')
-    dir_out = "L:\Transport_planning\VISIO ЧТП\Access\Operation Group\Шаблонные параметры РРЛ\Отчеты"
-    with rarfile.RarFile(path, "r") as rf:
-        rf.extractall(dir_out)
-    return "{dir_out}\\{name_report}".format(dir_out=dir_out, name_report=path.split('\\')[-1].replace('rar', 'xlsx'))
 
 
 def unpack_file_zip():
     """ Распаковка .zip """
 
-    path = get_path(path_user='L:\STAT.CP.Reports\Weekly_Template_Settings_Report')
+    path = get_path(path_user='/mnt/template_settings_share')
     archive = zipfile.ZipFile(path, 'r')
-    return archive.open(path.split('\\')[-1].replace('zip', 'xlsx'))
+    return archive.open(path.split('/')[-1].replace('zip', 'xlsx'))
 
 
 def unpack_file_any():
     """ Распаковка любого архива """
 
-    path = get_path(path_user='L:\STAT.CP.Reports\Weekly_Template_Settings_Report')
-    dir_out = "L:\Transport_planning\VISIO ЧТП\Access\Operation Group\Шаблонные параметры РРЛ\Отчеты"
+    path = get_path(path_user='/mnt/template_settings_share')
+    dir_out = "/mnt/cpfolders_share/Operation Group/Шаблонные параметры РРЛ/Отчеты"
     patoolib.extract_archive(path,
                              outdir=dir_out,
                              interactive=False
                              )
-    return f"{get_path(path_user=dir_out)}".replace('//', '\\')
+    return f"{get_path(path_user=dir_out)}".replace('\\', '//')
 
 
 def template_settings():
